@@ -1,0 +1,49 @@
+https://github.com/xen-troops/meta-xt-prod-gen3-test/blob/master/INSTALL
+
+
+*** prepare env for building Xen hypervisor
+- disable https verify:
+export PYTHONHTTPSVERIFY=0
+
+- foward git protocal to https protocal
+git config --global url.https://github.com/.insteadOf git://github.com/
+
+- clone git-repo and export PATH to recognize git-repo
+git clone https://gerrit.googlesource.com/git-repo
+export PATH=$PATH:path_to_folder_git-repo
+
+1. clone build-scripts
+git clone https://github.com/xen-troops/build-scripts.git
+
+2. prepare xt-gen3-test
+cp xt-build-server.cfg xt-gen3-test.cfg
+
+3. update xt-gen3-test
+workspace_base_dir = "location"
+workspace_storage_base_dir = "location"
+
+4. run build-scripts
+- In MobaXterm:
+umask a+rx
+umask u+rwx
+
+- Continue to build Xen
+python ./build_prod.py --build-type dailybuild --machine MACHINE_NAME --product gen3-test --with-local-conf --config xt-gen3-test.cfg
+
+MACHINE_NAME:
+- salvator-x-h3
+- salvator-x-h3-4x2g
+- salvator-x-m3
+- salvator-xs-h3
+- salvator-xs-h3-2x2g
+- salvator-xs-h3-4x2g
+
+5. Update local.conf
+XT_GUESTS_INSTALL = "domu"
+XT_GUESTS_BUILD = "domu"
+XT_RCAR_EVAPROPRIETARY_DIR = "/path/to/eva/archives"
+
+6. run build-scripts with argument --continue-build
+python ./build_prod.py --build-type dailybuild --machine MACHINE_NAME --product gen3-test --with-local-conf --config xt-gen3-test.cfg --continue-build
+
+
